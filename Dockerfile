@@ -15,13 +15,14 @@ RUN npm install -g typescript
 # Copy prisma schema first
 COPY prisma ./prisma/
 
-# Generate Prisma client
+# Generate Prisma client and push schema
 RUN npx prisma generate
+RUN npx prisma db push --accept-data-loss
 
 # Copy remaining source code
 COPY . .
 
-# Build TypeScript with global tsc
+# Build TypeScript
 RUN tsc
 
 # Expose port
