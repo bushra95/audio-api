@@ -13,11 +13,14 @@ RUN apk add --no-cache \
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install all dependencies (including devDependencies)
 RUN npm install
 
-# Copy tsconfig files
-COPY tsconfig*.json ./
+# Copy tsconfig
+COPY tsconfig.json ./
+
+# Copy source code
+COPY src ./src
 
 # Copy prisma schema
 COPY prisma ./prisma/
@@ -25,11 +28,11 @@ COPY prisma ./prisma/
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy source code
-COPY . .
-
 # Build TypeScript
 RUN npm run build
+
+# Remove dev dependencies
+RUN npm prune --production
 
 # Expose port
 EXPOSE 5001
