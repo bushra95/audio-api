@@ -1,8 +1,7 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { ENV } from './config/env';
 import { authRouter } from './routes/auth.routes';
-import { Request, Response, } from 'express';
 
 export const app = express();
 
@@ -18,7 +17,8 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 
 // Error handling middleware
-app.use((err: Error, _req: Request, res: Response) => {
+app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message || 'Something went wrong!' });
+  next(err);
 }); 
