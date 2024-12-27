@@ -4,6 +4,8 @@
   },
   "scripts": {
     "dev": "ts-node-dev --respawn src/server.ts",
+    "build": "npx prisma generate && tsc",
+    "start": "node dist/server.js",
     "seed": "prisma db seed"
   },
   "name": "audio-api",
