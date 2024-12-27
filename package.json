@@ -2,10 +2,12 @@
   "name": "audio-api",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn src/server.ts",
-    "prebuild": "npx prisma generate",
-    "build": "tsc",
+    "build": "npx prisma generate && tsc",
     "start": "node dist/server.js",
     "seed": "prisma db seed"
   },
