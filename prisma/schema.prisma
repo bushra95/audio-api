@@ -1,17 +1,16 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
 }
 
 model transcription {
@@ -22,4 +21,4 @@ model transcription {
   audioUrl      String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-} 
+}
