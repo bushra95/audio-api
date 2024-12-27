@@ -5,12 +5,9 @@ WORKDIR /app
 # Install dependencies including build tools
 RUN apk add --no-cache python3 make g++ openssl
 
-# Copy package files
-COPY package*.json ./
+# Copy package files and env
+COPY package*.json .env ./
 RUN npm install
-
-# Install TypeScript globally
-RUN npm install -g typescript
 
 # Copy prisma schema first
 COPY prisma ./prisma/
