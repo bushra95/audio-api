@@ -4,7 +4,7 @@ const prismaClientSingleton = () => {
   return new PrismaClient({
     datasources: {
       db: {
-        url: process.env.DATABASE_URL
+        url: 'postgresql://postgres:LaVzarpyWoOBiRykBmgnpmHXpwxxyfDl@postgres.railway.internal:5432/railway'
       }
     },
     log: ['query', 'error', 'warn']
