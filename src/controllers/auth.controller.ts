@@ -7,21 +7,30 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     console.log('Login attempt:', { email });
+    console.log('Database URL:', process.env.DATABASE_URL); // Debug log
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password: true
+      }
+    });
+
     if (!user) {
-      console.log('User not found:', { email });
+      console.log('User not found:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const isValid = await comparePasswords(password, user.password);
     if (!isValid) {
-      console.log('Invalid password for:', { email });
+      console.log('Invalid password for:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const tokens = generateTokens(user.id);
-    console.log('Login successful:', { email });
+    console.log('Login successful:', email);
     res.json(tokens);
   } catch (error) {
     console.error('Login error:', error);
