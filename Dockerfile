@@ -15,9 +15,8 @@ RUN npm install -g typescript
 # Copy prisma schema first
 COPY prisma ./prisma/
 
-# Generate Prisma client and push schema
+# Generate Prisma client
 RUN npx prisma generate
-RUN npx prisma db push --accept-data-loss
 
 # Copy remaining source code
 COPY . .
@@ -25,8 +24,12 @@ COPY . .
 # Build TypeScript
 RUN tsc
 
+# Make startup script executable
+COPY startup.sh .
+RUN chmod +x startup.sh
+
 # Expose port
 EXPOSE 5001
 
 # Start command
-CMD ["npm", "start"] 
+CMD ["./startup.sh"] 
