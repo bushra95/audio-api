@@ -1,61 +1,23 @@
 import { Request, Response } from 'express';
-import { TranscriptionService } from '../services/transcription.service';
-import { z } from 'zod';
+import { prisma } from '../lib/prisma';
 
-const updateSchema = z.object({
-  sentenceuser: z.string()
-});
+export const getTranscriptions = async (req: Request, res: Response) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = 10;
+    const skip = (page - 1) * limit;
 
-export class TranscriptionController {
-  private static instance: TranscriptionController;
-  private transcriptionService: TranscriptionService;
-
-  private constructor() {
-    this.transcriptionService = TranscriptionService.getInstance();
-  }
-
-  static getInstance(): TranscriptionController {
-    if (!TranscriptionController.instance) {
-      TranscriptionController.instance = new TranscriptionController();
-    }
-    return TranscriptionController.instance;
-  }
-
-  async getTranscriptions(req: Request, res: Response): Promise<void> {
-    try {
-      const { page } = req.query;
-      const result = await this.transcriptionService.getTranscriptions(
-        Number(page) || 1
-      );
-      res.json(result);
-    } catch (error) {
-      console.error('Controller error:', error);
-      res.status(500).json({ message: 'Failed to fetch transcriptions' });
-    }
-  }
-
-  async updateTranscription(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      const { sentenceuser } = updateSchema.parse(req.body);
-      const transcription = await this.transcriptionService.updateTranscription(id, sentenceuser);
-      res.json(transcription);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        res.status(400).json({ message: 'Invalid input', errors: error.errors });
-        return;
+    const transcriptions = await prisma.transcription.findMany({
+      skip,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc'
       }
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  }
+    });
 
-  async deleteTranscription(req: Request, res: Response): Promise<void> {
-    try {
-      const { id } = req.params;
-      await this.transcriptionService.deleteTranscription(id);
-      res.status(204).send();
-    } catch {
-      res.status(500).json({ message: 'Internal server error' });
-    }
+    res.json(transcriptions);
+  } catch (error) {
+    console.error('Get transcriptions error:', error);
+    res.status(500).json({ error: 'Failed to fetch transcriptions' });
   }
-} 
+}; 
