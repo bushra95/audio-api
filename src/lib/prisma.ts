@@ -4,7 +4,7 @@ const prismaClientSingleton = () => {
   return new PrismaClient({
     datasources: {
       db: {
-        url: 'postgresql://postgres:LaVzarpyWoOBiRykBmgnpmHXpwxxyfDl@postgres.railway.internal:5432/railway'
+        url: 'postgresql://postgres:LaVzarpyWoOBiRykBmgnpmHXpwxxyfDl@junction.proxy.rlwy.net:10109/railway'
       }
     },
     log: ['query', 'error', 'warn']
