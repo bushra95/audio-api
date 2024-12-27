@@ -22,7 +22,7 @@ RUN npx prisma generate
 COPY . .
 
 # Build TypeScript
-RUN tsc
+RUN npm run build
 
 # Make startup script executable
 COPY startup.sh .
