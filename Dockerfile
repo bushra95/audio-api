@@ -9,6 +9,9 @@ RUN apk add --no-cache python3 make g++ openssl
 COPY package*.json .env ./
 RUN npm install
 
+# Install TypeScript globally
+RUN npm install -g typescript
+
 # Copy prisma schema first
 COPY prisma ./prisma/
 
@@ -18,8 +21,8 @@ RUN npx prisma generate
 # Copy remaining source code
 COPY . .
 
-# Build TypeScript
-RUN npm run build
+# Build TypeScript with global tsc
+RUN tsc
 
 # Expose port
 EXPOSE 5001
