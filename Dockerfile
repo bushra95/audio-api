@@ -2,14 +2,22 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache python3 make g++
+# Install build dependencies including OpenSSL
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    openssl \
+    openssl-dev
 
 # Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# Copy tsconfig files
+COPY tsconfig*.json ./
 
 # Copy prisma schema
 COPY prisma ./prisma/
