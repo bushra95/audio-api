@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "ts-node-dev --respawn src/server.ts",
     "build": "tsc",
-    "postbuild": "npx prisma generate",
     "start": "node dist/server.js"
   },
   "prisma": {
