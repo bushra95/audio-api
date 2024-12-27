@@ -21,14 +21,7 @@ export class TranscriptionController {
         }
       });
 
-      const total = await prisma.transcription.count();
-
-      res.json({
-        data: transcriptions,
-        total,
-        page,
-        totalPages: Math.ceil(total / limit)
-      });
+      res.json(transcriptions);
     } catch (error) {
       console.error('Get transcriptions error:', error);
       res.status(500).json({ error: 'Failed to fetch transcriptions' });
