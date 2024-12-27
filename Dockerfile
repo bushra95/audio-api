@@ -9,8 +9,8 @@ RUN apk add --no-cache python3 make g++ openssl
 COPY package*.json .env ./
 RUN npm install
 
-# Install TypeScript globally
-RUN npm install -g typescript
+# Copy tsconfig
+COPY tsconfig.json ./
 
 # Copy prisma schema first
 COPY prisma ./prisma/
@@ -18,8 +18,8 @@ COPY prisma ./prisma/
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy remaining source code
-COPY . .
+# Copy source code
+COPY src ./src
 
 # Build TypeScript
 RUN npm run build
