@@ -6,15 +6,25 @@ import { generateTokens } from '../utils/jwt';
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+    console.log('Login attempt:', { email });
+
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) {
+      console.log('User not found:', { email });
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
 
     const isValid = await comparePasswords(password, user.password);
-    if (!isValid) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!isValid) {
+      console.log('Invalid password for:', { email });
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
 
     const tokens = generateTokens(user.id);
+    console.log('Login successful:', { email });
     res.json(tokens);
-  } catch {
+  } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });
   }
 };
