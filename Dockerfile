@@ -2,15 +2,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies including build tools
+RUN apk add --no-cache python3 make g++ openssl
+
+# Copy package files
 COPY package*.json ./
 RUN npm install
 
-# Copy source code
-COPY . .
+# Copy prisma schema first
+COPY prisma ./prisma/
 
 # Generate Prisma client
 RUN npx prisma generate
+
+# Copy remaining source code
+COPY . .
 
 # Build TypeScript
 RUN npm run build
