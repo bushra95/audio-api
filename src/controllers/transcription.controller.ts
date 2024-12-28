@@ -9,17 +9,26 @@ export class TranscriptionController {
     this.deleteTranscription = this.deleteTranscription.bind(this);
   }
 
-  async getTranscriptions(_req: Request, res: Response) {
+  async getTranscriptions(req: Request, res: Response) {
     try {
-      const transcriptions = await prisma.transcription.findMany({
-        orderBy: { createdAt: 'desc' }
-      });
+      const page = Number(req.query.page) || 1;
+      const limit = 5; // 5 items per page
+      const skip = (page - 1) * limit;
+
+      const [transcriptions, total] = await Promise.all([
+        prisma.transcription.findMany({
+          skip,
+          take: limit,
+          orderBy: { createdAt: 'desc' }
+        }),
+        prisma.transcription.count()
+      ]);
 
       res.json({
-        data: transcriptions || [],
-        total: transcriptions.length,
-        page: 1,
-        totalPages: 1
+        data: transcriptions,
+        total,
+        page,
+        totalPages: Math.ceil(total / limit)
       });
     } catch (error) {
       console.error('Get transcriptions error:', error);
