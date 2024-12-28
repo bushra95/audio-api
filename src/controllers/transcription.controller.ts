@@ -36,9 +36,16 @@ export class TranscriptionController {
 
   async createTranscription(req: Request, res: Response) {
     try {
+      console.log('Creating transcription:', req.body);
       const transcription = await prisma.transcription.create({
-        data: req.body
+        data: {
+          sentencelocal: req.body.sentencelocal,
+          sentenceapi: req.body.sentenceapi,
+          sentenceuser: req.body.sentenceuser || null,
+          audioUrl: req.body.audioUrl
+        }
       });
+      console.log('Created transcription:', transcription);
       res.status(201).json(transcription);
     } catch (error) {
       console.error('Create transcription error:', error);
