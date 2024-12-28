@@ -8,6 +8,11 @@ interface JwtPayload {
 }
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // For development, allow access without token
+  if (process.env.NODE_ENV !== 'production') {
+    return next();
+  }
+
   const token = req.headers.authorization?.split(' ')[1];
   
   if (!token) {
