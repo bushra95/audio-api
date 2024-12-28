@@ -5,6 +5,7 @@ export class TranscriptionController {
   constructor() {
     this.getTranscriptions = this.getTranscriptions.bind(this);
     this.createTranscription = this.createTranscription.bind(this);
+    this.updateTranscription = this.updateTranscription.bind(this);
     this.deleteTranscription = this.deleteTranscription.bind(this);
   }
 
@@ -50,6 +51,29 @@ export class TranscriptionController {
     } catch (error) {
       console.error('Create transcription error:', error);
       res.status(500).json({ error: 'Failed to create transcription' });
+    }
+  }
+
+  async updateTranscription(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      console.log('Updating transcription:', id, req.body);
+      
+      const transcription = await prisma.transcription.update({
+        where: { id },
+        data: {
+          sentencelocal: req.body.sentencelocal,
+          sentenceapi: req.body.sentenceapi,
+          sentenceuser: req.body.sentenceuser,
+          audioUrl: req.body.audioUrl
+        }
+      });
+
+      console.log('Updated transcription:', transcription);
+      res.json(transcription);
+    } catch (error) {
+      console.error('Update transcription error:', error);
+      res.status(500).json({ error: 'Failed to update transcription' });
     }
   }
 
