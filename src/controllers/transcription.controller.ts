@@ -4,6 +4,8 @@ import { prisma } from '../lib/prisma';
 export class TranscriptionController {
   constructor() {
     this.getTranscriptions = this.getTranscriptions.bind(this);
+    this.createTranscription = this.createTranscription.bind(this);
+    this.deleteTranscription = this.deleteTranscription.bind(this);
   }
 
   async getTranscriptions(_req: Request, res: Response) {
@@ -29,6 +31,30 @@ export class TranscriptionController {
         page: 1,
         totalPages: 0
       });
+    }
+  }
+
+  async createTranscription(req: Request, res: Response) {
+    try {
+      const transcription = await prisma.transcription.create({
+        data: req.body
+      });
+      res.status(201).json(transcription);
+    } catch (error) {
+      console.error('Create transcription error:', error);
+      res.status(500).json({ error: 'Failed to create transcription' });
+    }
+  }
+
+  async deleteTranscription(req: Request, res: Response) {
+    try {
+      await prisma.transcription.delete({
+        where: { id: req.params.id }
+      });
+      res.status(200).json({ message: 'Transcription deleted' });
+    } catch (error) {
+      console.error('Delete transcription error:', error);
+      res.status(500).json({ error: 'Failed to delete transcription' });
     }
   }
 } 
