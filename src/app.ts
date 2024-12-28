@@ -10,7 +10,7 @@ export const app = express();
 app.use(cors({
   origin: ENV.CORS_ORIGIN,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
@@ -19,6 +19,12 @@ app.use(express.json());
 // API routes with prefix
 app.use('/api/auth', authRouter);
 app.use('/api/transcriptions', transcriptionRoutes);
+
+// Add PUT handler for backward compatibility
+app.put('/api/transcriptions/:id', (req, res, next) => {
+  req.method = 'PATCH';
+  transcriptionRoutes(req, res, next);
+});
 
 // Error handling middleware
 app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
