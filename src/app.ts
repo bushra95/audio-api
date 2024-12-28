@@ -20,12 +20,6 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/transcriptions', transcriptionRoutes);
 
-// Add PUT handler for backward compatibility
-app.put('/api/transcriptions/:id', (req, res, next) => {
-  req.method = 'PATCH';
-  transcriptionRoutes(req, res, next);
-});
-
 // Error handling middleware
 app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
   console.error('Global error:', err);
