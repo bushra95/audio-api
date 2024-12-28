@@ -12,9 +12,7 @@ export class TranscriptionController {
   async getTranscriptions(_req: Request, res: Response) {
     try {
       const transcriptions = await prisma.transcription.findMany({
-        orderBy: {
-          createdAt: 'desc'
-        }
+        orderBy: { createdAt: 'desc' }
       });
 
       res.json({
@@ -37,7 +35,6 @@ export class TranscriptionController {
 
   async createTranscription(req: Request, res: Response) {
     try {
-      console.log('Creating transcription:', req.body);
       const transcription = await prisma.transcription.create({
         data: {
           sentencelocal: req.body.sentencelocal,
@@ -46,7 +43,6 @@ export class TranscriptionController {
           audioUrl: req.body.audioUrl
         }
       });
-      console.log('Created transcription:', transcription);
       res.status(201).json(transcription);
     } catch (error) {
       console.error('Create transcription error:', error);
@@ -57,15 +53,20 @@ export class TranscriptionController {
   async updateTranscription(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      console.log('Updating transcription:', id, req.body);
-      
+      console.log('Updating transcription:', { id, body: req.body });
+
+      const existing = await prisma.transcription.findUnique({
+        where: { id }
+      });
+
+      if (!existing) {
+        return res.status(404).json({ error: 'Transcription not found' });
+      }
+
       const transcription = await prisma.transcription.update({
         where: { id },
         data: {
-          sentencelocal: req.body.sentencelocal,
-          sentenceapi: req.body.sentenceapi,
-          sentenceuser: req.body.sentenceuser,
-          audioUrl: req.body.audioUrl
+          sentenceuser: req.body.sentenceuser
         }
       });
 
